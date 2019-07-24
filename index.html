@@ -5,33 +5,169 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Document</title>
+
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css"
+    />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <button data-buttonclick>cats</button>
-    <button data-clearbuttonclick>clear</button>
-    <div id="result"></div>
-
+    <audio id="nyan">
+      <source src="nyan.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+    <div
+      style="
+      height: 100px;
+      color:#000;
+      position:absolute;
+      bottom:50px;
+      right:50px;
+      font-family: lucida grande,tahoma,verdana,arial,sans-serif;
+      line-height: 1;
+      overflow: scroll;
+      padding-top: 15px;
+      white-space: pre;
+      word-wrap: normal;"
+    >
+      █▀▀ █▀▀█ █▀▀█     █▀▀ █▀▄▀█ ░▀░ █░░ █░░█
+      █▀▀ █░░█ █▄▄▀     █▀▀ █░▀░█ ▀█▀ █░░ █▄▄█
+      ▀░░ ▀▀▀▀ ▀░▀▀     ▀▀▀ ▀░░░▀ ▀▀▀ ▀▀▀ ▄▄▄█
+    </div>
+    <div class="container">
+      <div class="row">
+        <div
+          style="display:flex; justify-content:center; align-items:center; height:100vh; width:100%;"
+        >
+          <div
+            style="display:flex; justify-content:center; align-items:center; flex-direction:column;"
+          >
+            <p style="color:white;">Scroll down for cats.</p>
+            <button class="btn btn-link" data-clearbuttonclick>
+              clear all
+            </button>
+          </div>
+        </div>
+        <div style="height:1vh; width:100%;"></div>
+      </div>
+      <div class="row" id="result"></div>
+    </div>
     <script
       src="https://code.jquery.com/jquery-3.4.1.min.js"
       integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
       crossorigin="anonymous"
     ></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"></script>
+    <script src="http://www.cornify.com/js/cornify.js"></script>
     <script>
       $(function() {
+        $(document).keypress(function(event) {
+          const pressed = String.fromCharCode(event.which);
+          console.log(pressed);
+          if (pressed == "e") {
+            $("body").css("background-color", "#143f20");
+          }
+
+          if (pressed == "!") {
+            //init cornify
+            cornify_add();
+          }
+
+          if (pressed == "r") {
+            var nyanSong = document.getElementById("nyan");
+            function playAudio() {
+              nyanSong.play();
+            }
+            playAudio();
+
+            $("html").css(
+              "cursor",
+              "url('http://www.rw-designer.com/cursor-view/34833.gif'),auto"
+            );
+            $("body").css(
+              "cursor",
+              'url("http://www.rw-designer.com/cursor-view/34833.gif"),auto'
+            );
+
+            var body = $("body");
+            var colors = ["red", "green", "blue", "yellow", "pink", "purple"];
+            var currentIndex = 0;
+            setInterval(function() {
+              body.css({
+                backgroundColor: colors[currentIndex]
+              });
+              if (!colors[currentIndex]) {
+                currentIndex = 0;
+              } else {
+                currentIndex++;
+              }
+            }, 300);
+          }
+        });
+        new WOW().init();
+
         $("[data-clearbuttonclick]").on("click", function() {
           $("#result").html("");
         });
+        const numbers = [0, 1, 2, 3, 4, 5, 6, 7];
+        const effects = [
+          "bounce",
+          "pulse",
+          "rubberBand",
+          "shake",
+          "swing",
+          "tada",
+          "wobble",
+          "bounceIn",
+          "bounceInDown",
+          "bounceInLeft",
+          "bounceInRight",
+          "bounceInUp",
+          "fadeIn",
+          "fadeInDown",
+          "fadeInDownBig",
+          "fadeInLeft",
+          "fadeInLeftBig",
+          "fadeInRight",
+          "fadeInRightBig",
+          "fadeInUp",
+          "fadeInUpBig",
+          "flip",
+          "lightSpeedIn",
+          "rotateIn",
+          "rotateInDownLeft",
+          "rotateInDownRight",
+          "rotateInUpLeft",
+          "rotateInUpRight",
+          "rollIn",
+          "zoomIn",
+          "zoomInDown",
+          "zoomInLeft",
+          "zoomInRight",
+          "zoomInUp"
+        ];
 
         function appendCats() {
           $.ajax({
             url:
-              "https://api.thecatapi.com/v1/images/search?limit=50&page=10&order=Desc",
+              "https://api.thecatapi.com/v1/images/search?limit=30&page=10&order=Desc",
             method: "get",
             success: function(res) {
               res.forEach(function(element, index) {
+                var number =
+                  numbers[Math.round(Math.random() * (numbers.length - 1))];
+                var effect =
+                  effects[Math.round(Math.random() * (effects.length - 1))];
                 $("#result").append(
-                  `<img width="300px" height="300px" src="${element.url}" />`
+                  `<div class="col-6 col-md-3"><img class="img-fluid wow ${effect}" data-wow-delay=".${number}s" style=" margin-bottom:20px;" src="${
+                    element.url
+                  }" /></div>`
                 );
               });
             },
