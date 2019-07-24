@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <button data-buttonclick>cats</button>
+    <button data-clearbuttonclick>clear</button>
+    <div id="result"></div>
+
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      $(function() {
+        $("[data-clearbuttonclick]").on("click", function() {
+          $("#result").html("");
+        });
+
+        function appendCats() {
+          $.ajax({
+            url:
+              "https://api.thecatapi.com/v1/images/search?limit=50&page=10&order=Desc",
+            method: "get",
+            success: function(res) {
+              res.forEach(function(element, index) {
+                $("#result").append(
+                  `<img width="300px" height="300px" src="${element.url}" />`
+                );
+              });
+            },
+            error: function(res) {}
+          });
+        }
+
+        $(window).scroll(function() {
+          if (
+            $(window).scrollTop() + $(window).height() ==
+            $(document).height()
+          ) {
+            appendCats();
+          }
+        });
+
+        $("[data-buttonclick]").on("click", function() {
+          appendCats();
+        });
+      });
+    </script>
+  </body>
+</html>
